@@ -1,5 +1,7 @@
-import { ethers } from "hardhat";
+import { ethers, network } from "hardhat";
 import * as dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 
 dotenv.config();
 
@@ -15,7 +17,28 @@ async function main() {
     const UserNft = await ethers.getContractFactory("UserMintedNFT");
     const userNft = await UserNft.deploy(forwarder);
     await userNft.waitForDeployment();
-    console.log("AuctionToken deployed at:", userNft.target);
+    console.log("userMintedNFT deployed at:", userNft.target);
+
+    const deploymentDir = path.resolve(__dirname, "../deployments");
+    if (!fs.existsSync(deploymentDir)) {
+        fs.mkdirSync(deploymentDir);
+    }
+
+    const savePath = path.join(deploymentDir, "UserMintedNFT.json");
+    fs.writeFileSync(
+        savePath,
+        JSON.stringify(
+            {
+                address: userNft.target,
+                deployer: deployer.address,
+                network: process.env.RPC_URL || "unknown"
+            },
+            null,
+            2
+        )
+    );
+
+    console.log(`Address saved to ${savePath}`);
 
 }
 

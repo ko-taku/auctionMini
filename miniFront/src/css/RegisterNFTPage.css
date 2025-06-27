@@ -1,0 +1,78 @@
+.register-nft-wrapper {
+    padding: 24px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.register-nft-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.nft-form-section {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nft-image-input,
+.nft-text-input,
+.nft-textarea,
+.nft-select {
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.nft-selected-filename {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.nft-submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #16a34a;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.nft-submit-button:hover {
+    background-color: #15803d;
+}
+
+.nft-attribute-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.nft-add-button,
+.nft-remove-button {
+    background-color: #ddd;
+    color: #333;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.nft-add-button:hover {
+    background-color: #ccc;
+}
+
+.nft-remove-button:hover {
+    background-color: #f87171;
+    color: white;
+}
