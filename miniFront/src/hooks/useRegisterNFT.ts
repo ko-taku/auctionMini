@@ -12,6 +12,7 @@ export type Attribute = {
 
 const NFT_CONTRACT_ADDRESS = import.meta.env.VITE_NFT_CONTRACT_ADDRESS;
 const FORWARDER_ADDRESS = import.meta.env.VITE_FORWARDER_ADDRESS;
+const RELAYER_ADDRESS = import.meta.env.VITE_RELAYER_ADDRESS;
 
 export function useRegisterNFT() {
     const [image, setImage] = useState<File | null>(null);
@@ -54,6 +55,14 @@ export function useRegisterNFT() {
             return;
         }
 
+        // ✅ RELAYER ADDRESS 차단 로직
+        if (address.toLowerCase() === RELAYER_ADDRESS) {
+            alert(
+                "⚠️ 이 지갑 주소는 Relayer 지갑입니다. 사용자 지갑으로 연결해주세요."
+            );
+            return;
+        }
+
         const formData = new FormData();
         formData.append("file", image);
         formData.append("name", title);
@@ -84,10 +93,17 @@ export function useRegisterNFT() {
                 throw new Error("지갑 연결 정보가 없습니다");
             }
 
+
+            // ✅ 먼저 provider를 확실히 선택
+            const effectiveProvider = provider ?? wallet?.provider;
+            if (!effectiveProvider) {
+                throw new Error("Provider가 연결되지 않았습니다.");
+            }
+
             const forwarderContract = new ethers.Contract(
                 FORWARDER_ADDRESS,
                 MinimalForwarderABI,
-                provider || wallet?.provider
+                effectiveProvider
                 //옵셔널 체이닝 연산자
                 //provider 있으면 그걸 쓰고 없을 때 wallet 있으면 wallet.provider, null이면 undefined
             );
@@ -95,14 +111,22 @@ export function useRegisterNFT() {
             const nftContract = new ethers.Contract(
                 NFT_CONTRACT_ADDRESS,
                 NFtContractABI,
-                provider || wallet?.provider
+                effectiveProvider
             );
 
             //mint 함수 인코딩
             const dataEncoded = nftContract.interface.encodeFunctionData("mint", [data.tokenURI]);
             console.log("Encoded mint data: ", dataEncoded);
 
+            const nonce = await forwarderContract.nonces(address);
+            console.log("nonce: ", nonce.toString());
+
             const deadline = Math.floor(Date.now() / 1000) + 3600; // 1시간 유효
+
+            // ✅ 추가 디버깅 로그
+            console.log("✅ Connected Network (프론트):", await effectiveProvider.getNetwork());
+            console.log("✅ FORWARDER_ADDRESS:", FORWARDER_ADDRESS);
+            console.log("✅ NFT_CONTRACT_ADDRESS:", NFT_CONTRACT_ADDRESS);
 
             //ForwardRequest 객체 생성
             const request = {
@@ -110,16 +134,12 @@ export function useRegisterNFT() {
                 to: NFT_CONTRACT_ADDRESS,
                 value: "0",
                 gas: "500000",
+                nonce: nonce.toString(),
                 deadline: deadline.toString(),
                 data: dataEncoded,
             };
             console.log("ForwardRequest: ", request);
 
-            // ✅ 먼저 provider를 확실히 선택
-            const effectiveProvider = provider ?? wallet?.provider;
-            if (!effectiveProvider) {
-                throw new Error("Provider가 연결되지 않았습니다.");
-            }
 
             const chainId = (await effectiveProvider.getNetwork()).chainId;
             //getNetwork()는 undefined에서 메서드 호출이 안됨
@@ -137,6 +157,7 @@ export function useRegisterNFT() {
                     { name: "to", type: "address" },
                     { name: "value", type: "uint256" },
                     { name: "gas", type: "uint256" },
+                    { name: "nonce", type: "uint256" },
                     { name: "deadline", type: "uint48" },
                     { name: "data", type: "bytes" },
                 ],

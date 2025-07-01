@@ -75,38 +75,69 @@ export class PinataService {
 
     async relayMetaTransaction(request: any, signature: string): Promise<any> {
         const forwarderAddress = this.configService.get<string>('FORWARDER_ADDRESS');
+
         const forwarder = new ethers.Contract(
             forwarderAddress,
             ForwarderAbi,
             this.ethersProvider.wallet,
         );
 
-        console.log('ForwardRequest: ', request);
-        console.log('서명: ', signature);
+        // relayMetaTransaction 함수 안에서
+        console.log('✅ Received ForwardRequest:', request);
+        console.log('✅ Received Signature:', signature);
 
+        // 로그 찍기
+        console.log('✅ SERVER Relayer Wallet Address:', this.ethersProvider.wallet.address);
+        console.log('✅ SERVER Provider:', this.ethersProvider.provider);
+
+        const network = await this.ethersProvider.provider.getNetwork();
+        console.log('✅ SERVER Network:', network);
+        console.log('✅ SERVER ChainId:', network.chainId.toString());
+
+        try {
+            const network = await this.ethersProvider.provider.getNetwork();
+            console.log('✅ SERVER Network:', network);
+        } catch (err) {
+            console.error('❌ Error getting network:', err);
+        }
+
+        console.log('✅ Forwarder Address (서버):', forwarderAddress);
+        console.log('✅ Relayer Wallet Address (서버):', this.ethersProvider.wallet.address);
+
+
+        // 서버에서도 on-chain nonce 확인
+        const onChainNonce = await forwarder.nonces(request.from);
+        console.log('✅ Forwarder Nonce On-Chain (서버):', onChainNonce.toString());
 
         const requestWithSignature = {
             ...request,
             signature
         };
 
+        console.log('forwarder.verify 호출...');
         const isValid = await forwarder.verify(requestWithSignature);
         if (!isValid) {
+            console.log('x 잘못된 서명입니다');
             throw new Error('잘못된 서명입니다');
         }
         console.log('서명 겸증 성공');
 
+        console.log('forwarder.execute 호출...');
         const tx = await forwarder.execute(requestWithSignature, {
             gasLimit: 500_000,
         });
         console.log('execute 트랜잭션 전송: ', tx.hash);
 
         const receipt = await tx.wait();
-        console.log('트랜잭션 채굴 완료: ', receipt.transactionHash);
+        console.log('✅ Receipt Full Object:', receipt);
+        const txHash = receipt?.hash || receipt?.transactionHash || 'UNKNOWN';
+        //ethersV6은 hash, V5는 transactionHash, 둘 다 없으면 UNKNOWN
+        console.log('✅ 트랜잭션 채굴 완료: ', txHash);
 
         return {
-            txHash: receipt.transactionHash,
-            status: receipt.status,
+            txHash,
+            status: receipt?.status ?? null,
+            //status가 undefined일 수 있는 경우 대비, 반드시 null 또는 0/1 형태로 리턴하도록 안전 처리
         };
     }
 }
