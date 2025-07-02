@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { PinataModule } from './pinata/pinata.module';
+import { MetaModule } from './meta/meta.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { PinataModule } from './pinata/pinata.module';
       isGlobal: true, // 모든 모듈에서 환경변수 사용 가능
     }),
     PinataModule,
+    MetaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

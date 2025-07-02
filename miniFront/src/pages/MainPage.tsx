@@ -1,10 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { useWallet } from "../contexts/WalletContext";
 import MetamaskHelp from '../components/MetamaskHelp';
 import "../css/MainPage.css";
 
 const MainPage = () => {
-    const navigate = useNavigate();
     const {
         address,
         accounts,
@@ -56,12 +54,6 @@ const MainPage = () => {
 
             {address && <p className="selected-address">선택된 지갑: {address}</p>}
 
-            <button
-                onClick={() => navigate('/auction')}
-                className="go-to-auction-button"
-            >
-                🎯 경매 페이지로 이동
-            </button>
         </div>
     );
 };
