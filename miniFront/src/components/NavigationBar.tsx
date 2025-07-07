@@ -16,6 +16,7 @@ const NavigationBar = () => {
                 <li><Link to="/">🏠 메인</Link></li>
                 <li><Link to="/auction">🎯 경매</Link></li>
                 <li><Link to="/register">🖼️ NFT 등록</Link></li>
+                <li><Link to="/nftlist">🖼️ NFT 리스트</Link></li>
             </ul>
         </nav>
     );

@@ -74,3 +74,36 @@
 .go-to-auction-button:hover {
     background-color: #6d28d9;
 }
+
+.jwt-info {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #f0f8ff;
+    border: 1px solid #b3d4fc;
+    color: #333;
+    max-width: 500px;
+    word-break: break-all;
+}
+
+.jwt-info p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #444;
+}
+
+.logout-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #e74c3c;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
+}

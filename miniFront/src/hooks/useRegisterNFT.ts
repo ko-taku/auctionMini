@@ -6,6 +6,7 @@ import NFtContractABI from "../abi/NFTContract.json";
 import { uploadNFTToPinata } from "./useUploadNFT";
 import { reserveNonce } from "./useReserveNonce";
 import { relayMetaTransaction } from "./useRelayMetaTx";
+import { useAuth } from "./useAuth";
 
 export function useRegisterNFT() {
     const [image, setImage] = useState<File | null>(null);
@@ -16,6 +17,7 @@ export function useRegisterNFT() {
         { trait_type: "", value: "" },
     ]);
     const { address, wallet, provider } = useWallet();
+    const { token, jwtAddress } = useAuth();
 
     const handleSubmit = async () => {
         if (!image || !title || !description || !address) {
@@ -52,10 +54,18 @@ export function useRegisterNFT() {
             // mint 함수 encode
             const dataEncoded = nftContract.interface.encodeFunctionData("mint", [pinataResult.tokenURI]);
 
+
+            if (!jwtAddress || !token) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+
+
             // ✅ 3️⃣ 서버에서 예약된 nonce 받기
             const nonce = await reserveNonce({
                 forwarderAddress,
-                userAddress: address,
+                jwtAddress,
+                token
             });
 
             console.log("✅ Reserved Nonce:", nonce);
@@ -63,7 +73,7 @@ export function useRegisterNFT() {
             // ✅ 4️⃣ ForwardRequest 생성
             const deadline = Math.floor(Date.now() / 1000) + 3600;
             const request = {
-                from: address,
+                from: jwtAddress,
                 to: import.meta.env.VITE_NFT_CONTRACT_ADDRESS,
                 value: 0,
                 gas: 500000,
@@ -101,6 +111,7 @@ export function useRegisterNFT() {
                 forwarderAddress,
                 request,
                 signature,
+                token
             });
 
             console.log("✅ Relay 성공:", relayResult);
@@ -108,7 +119,7 @@ export function useRegisterNFT() {
 
         } catch (err) {
             console.error(err);
-            alert("업로드 실패");
+            alert("업로드 실패" + (err as Error).message);
         }
     };
 

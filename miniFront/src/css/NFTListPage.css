@@ -1,0 +1,90 @@
+.nft-page-container {
+    padding: 20px;
+}
+
+.nft-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.nft-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.nft-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.nft-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.nft-image {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.nft-name {
+    margin: 10px 0 5px;
+}
+
+.nft-image-container {
+    height: 250px;
+    /* 원하는 높이로 조정 가능 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 이미지 없는 영역 배경 */
+    overflow: hidden;
+}
+
+.nft-content {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+.nft-description {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.nft-info {
+    font-size: 0.8rem;
+    color: #777;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination button {
+    padding: 6px 12px;
+    margin: 0 5px;
+    font-size: 0.9rem;
+}
+
+.pagination-info {
+    margin: 0 10px;
+    font-weight: bold;
+}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import type { MetaMaskInpageProvider } from '@metamask/providers';
 
@@ -17,6 +17,7 @@ type WalletContextType = {
     setProvider: React.Dispatch<React.SetStateAction<ethers.BrowserProvider | null>>;
     connectWithMetamask: () => Promise<void>;
     connectWithPrivateKey: () => Promise<void>;
+    SignMessage: (message: string) => Promise<string>;
 };
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -42,6 +43,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 setAddress(null);
                 setProvider(newProvider);
                 setWallet(null);
+
             }
         } catch (err) {
             console.error(err);
@@ -65,6 +67,56 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
     };
 
+    const SignMessage = async (message: string): Promise<string> => {
+        if (provider) {
+            const signer = await provider.getSigner();
+            return await signer.signMessage(message);
+        } else if (wallet) {
+            return await wallet.signMessage(message);
+        } else {
+            throw new Error("지갑이 연결되어 있지 않습니다");
+        }
+    }
+
+    //메타마스크 계정 자동 복원
+    useEffect(() => {
+        const tryReconnect = async () => {
+            if (window.ethereum) {
+                try {
+                    const newProvider = new ethers.BrowserProvider(window.ethereum);
+                    const existingAccounts = await newProvider.send("eth_accounts", []);
+                    if (existingAccounts.length > 0) {
+                        setAccounts(existingAccounts);
+                        setProvider(newProvider);
+                        setWallet(null);
+                        console.log("메타마스크 자동 복원: ", existingAccounts);
+                    }
+                } catch (error) {
+                    console.error("메타마스크 자동 복원 실패", error);
+                }
+            }
+        };
+        tryReconnect();
+    }, []);
+
+    //선택된 address 자동 복원
+    useEffect(() => {
+        const savedAddress = localStorage.getItem('selectedAddress');
+        if (savedAddress) {
+            setAddress(savedAddress);
+            console.log("저장된 address 복원", savedAddress);
+        }
+    }, []);
+
+    //address가 바뀔 때 local에 저장
+    useEffect(() => {
+        if (address) {
+            localStorage.setItem('selectedAddress', address);
+        } else {
+            localStorage.removeItem('selectedAddress');
+        }
+    }, [address]);
+
     return (
         <WalletContext.Provider
             value={{
@@ -75,7 +127,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 setAddress,
                 setProvider,
                 connectWithMetamask,
-                connectWithPrivateKey
+                connectWithPrivateKey,
+                SignMessage
             }}
         >
             {children}

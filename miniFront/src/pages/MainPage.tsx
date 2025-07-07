@@ -1,32 +1,41 @@
 import { useWallet } from "../contexts/WalletContext";
+import { useAuth } from "../hooks/useAuth";
+import { useConnectAndLogin } from "../hooks/useConnectAndLogin";
 import MetamaskHelp from '../components/MetamaskHelp';
 import "../css/MainPage.css";
 
 const MainPage = () => {
+
     const {
         address,
         accounts,
         setAddress,
         connectWithMetamask,
-        connectWithPrivateKey
+        connectWithPrivateKey,
     } = useWallet();
+
+    const { token, logout } = useAuth();
+
+    const { connected, loggingIn, handleConnectAndLogin } = useConnectAndLogin();
 
     return (
         <div className="main-page-wrapper">
             <h1 className="main-page-title">NFT 등록 시스템</h1>
 
             <button
-                onClick={connectWithMetamask}
+                onClick={() => handleConnectAndLogin(connectWithMetamask)}
+                disabled={loggingIn}
                 className="connect-button-metamask"
             >
-                🦊 Metamask로 연결
+                {connected ? '✅ 선택한 계정으로 로그인' : '🦊 Metamask로 연결'}
             </button>
 
             <button
-                onClick={connectWithPrivateKey}
+                onClick={() => handleConnectAndLogin(connectWithPrivateKey)}
+                disabled={loggingIn}
                 className="connect-button-privatekey"
             >
-                🔑 Private Key로 연결
+                {connected ? '✅ 선택한 계정으로 로그인' : '🔑 Private Key로 연결'}
             </button>
 
             {accounts.length > 0 && (
@@ -53,6 +62,15 @@ const MainPage = () => {
             )}
 
             {address && <p className="selected-address">선택된 지갑: {address}</p>}
+            {token && (
+                <div className="jwt-info">
+                    <p>✅ 로그인 완료 (JWT): {token}</p>
+                    <button onClick={logout} className="logout-button">
+                        로그아웃
+                    </button>
+                </div>
+            )}
+
 
         </div>
     );

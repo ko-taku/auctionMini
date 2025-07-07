@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { PinataModule } from './pinata/pinata.module';
 import { MetaModule } from './meta/meta.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MetaModule } from './meta/meta.module';
     }),
     PinataModule,
     MetaModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
