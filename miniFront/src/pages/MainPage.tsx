@@ -38,7 +38,24 @@ const MainPage = () => {
                 {connected ? '✅ 선택한 계정으로 로그인' : '🔑 Private Key로 연결'}
             </button>
 
-            {accounts.length > 0 && (
+            {accounts.length > 1 && (
+                <div className="account-list-section">
+                    <p>🗂️ 메타마스크에서 다른 계정을 선택하면 아래 활성 계정이 변경됩니다:</p>
+                    <ul className="account-list">
+                        {accounts.map((acc) => (
+                            <li key={acc} className={acc === address ? 'active-account' : ''}>
+                                {acc} {acc === address && '(활성화)'}
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="note">
+                        👉 계정 변경은 메타마스크 확장에서 직접 선택해주세요.
+                    </p>
+                    <MetamaskHelp />
+                </div>
+            )}
+
+            {/* {accounts.length > 0 && (
                 <div className="account-select-section">
                     <label htmlFor="account-select" className="account-select-label">
                         사용할 계정을 선택하세요:
@@ -59,7 +76,7 @@ const MainPage = () => {
 
                     <MetamaskHelp />
                 </div>
-            )}
+            )} */}
 
             {address && <p className="selected-address">선택된 지갑: {address}</p>}
             {token && (

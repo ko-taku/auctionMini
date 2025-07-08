@@ -6,6 +6,7 @@ import { WalletProvider } from './contexts/WalletContext';
 import { AuthProvider } from './contexts/AuthContext';
 import NavigationBar from './components/NavigationBar';
 import NFTListPage from './pages/NFTListPage';
+import { TokenReward } from './pages/TokenReward';
 
 //export default면 중괄호 없이, named export면 중괄호로 import
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route path="/auction" element={<AuctionPage />} />
             <Route path="/register" element={<RegisterNFTPage />} />
             <Route path="/nftlist" element={<NFTListPage />} />
+            <Route path="/tokenReward" element={<TokenReward />} />
           </Routes>
         </BrowserRouter>
       </WalletProvider>

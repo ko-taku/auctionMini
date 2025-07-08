@@ -8,5 +8,6 @@ import { EthersProvider } from './ethers.provider';
     imports: [ConfigModule],
     providers: [MetaService, EthersProvider],
     controllers: [MetaController],
+    exports: [MetaService],
 })
 export class MetaModule { }

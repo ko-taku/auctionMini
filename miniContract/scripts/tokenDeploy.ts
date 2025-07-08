@@ -16,6 +16,7 @@ async function main() {
     const engageToken = await EngageToken.deploy();
     await engageToken.waitForDeployment();
     console.log("EngageToken deployed at:", engageToken.target);
+
 }
 
 main().catch((error) => {

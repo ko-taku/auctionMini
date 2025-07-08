@@ -20,6 +20,7 @@ exports.MetaModule = MetaModule = __decorate([
         imports: [config_1.ConfigModule],
         providers: [meta_service_1.MetaService, ethers_provider_1.EthersProvider],
         controllers: [meta_controller_1.MetaController],
+        exports: [meta_service_1.MetaService],
     })
 ], MetaModule);
 //# sourceMappingURL=meta.module.js.map

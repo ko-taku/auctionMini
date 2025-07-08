@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
 import type { MetaMaskInpageProvider } from '@metamask/providers';
 
@@ -38,12 +38,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             await newProvider.send("eth_requestAccounts", []);
             const selectedAccounts = await newProvider.send("eth_accounts", []);
 
-            if (Array.isArray(selectedAccounts) && selectedAccounts.length > 0) {
+            if (selectedAccounts.length > 0) {
                 setAccounts(selectedAccounts);
-                setAddress(null);
+                setAddress(selectedAccounts[0]);
                 setProvider(newProvider);
                 setWallet(null);
-
+                console.log("✅ 메타마스크 연결 성공:", selectedAccounts[0]);
             }
         } catch (err) {
             console.error(err);
@@ -78,44 +78,31 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
     }
 
-    //메타마스크 계정 자동 복원
+    /**
+     * ✅ 메타마스크 계정 전환 감지
+     * - 사용자가 메타마스크에서 계정 변경 시 자동 반영
+     */
     useEffect(() => {
-        const tryReconnect = async () => {
-            if (window.ethereum) {
-                try {
-                    const newProvider = new ethers.BrowserProvider(window.ethereum);
-                    const existingAccounts = await newProvider.send("eth_accounts", []);
-                    if (existingAccounts.length > 0) {
-                        setAccounts(existingAccounts);
-                        setProvider(newProvider);
-                        setWallet(null);
-                        console.log("메타마스크 자동 복원: ", existingAccounts);
-                    }
-                } catch (error) {
-                    console.error("메타마스크 자동 복원 실패", error);
+        if (window.ethereum) {
+            const handleAccountsChanged = (...args: unknown[]) => {
+                const accounts = args[0] as string[] | undefined;
+                if (accounts && accounts.length > 0) {
+                    setAccounts(accounts);
+                    setAddress(accounts[0]);
+                    console.log("✅ 메타마스크 계정 변경:", accounts[0]);
+                } else {
+                    setAccounts([]);
+                    setAddress(null);
                 }
-            }
-        };
-        tryReconnect();
-    }, []);
+            };
 
-    //선택된 address 자동 복원
-    useEffect(() => {
-        const savedAddress = localStorage.getItem('selectedAddress');
-        if (savedAddress) {
-            setAddress(savedAddress);
-            console.log("저장된 address 복원", savedAddress);
+            window.ethereum.on('accountsChanged', handleAccountsChanged);
+
+            return () => {
+                window.ethereum?.removeListener('accountsChanged', handleAccountsChanged);
+            };
         }
     }, []);
-
-    //address가 바뀔 때 local에 저장
-    useEffect(() => {
-        if (address) {
-            localStorage.setItem('selectedAddress', address);
-        } else {
-            localStorage.removeItem('selectedAddress');
-        }
-    }, [address]);
 
     return (
         <WalletContext.Provider

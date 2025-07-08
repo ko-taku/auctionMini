@@ -4,6 +4,7 @@
   "scripts": {
     "tokenDeploy": "npx hardhat run scripts/tokenDeploy.ts --network kairos",
     "deployForwarder": "npx hardhat run scripts/deployForwarder.ts --network kairos",
+    "deployCustomForwarder": "npx hardhat run scripts/deployCustomForwarder.ts --network kairos",
     "NFTMintDeploy": "npx hardhat run scripts/NFTMintDeploy.ts --network kairos",
     "AttendanceDeploy": "npx hardhat run scripts/AttendanceDeploy.ts --network kairos",
     "compile": "npx hardhat compile",
