@@ -14,6 +14,7 @@ type WalletContextType = {
     provider: ethers.BrowserProvider | null;
     wallet: ethers.Wallet | null;
     setAddress: React.Dispatch<React.SetStateAction<string | null>>;
+    setAccounts: React.Dispatch<React.SetStateAction<string[]>>;
     setProvider: React.Dispatch<React.SetStateAction<ethers.BrowserProvider | null>>;
     connectWithMetamask: () => Promise<void>;
     connectWithPrivateKey: () => Promise<void>;
@@ -112,6 +113,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 provider,
                 wallet,
                 setAddress,
+                setAccounts,
                 setProvider,
                 connectWithMetamask,
                 connectWithPrivateKey,

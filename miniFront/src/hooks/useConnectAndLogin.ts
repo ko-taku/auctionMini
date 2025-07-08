@@ -3,12 +3,14 @@ import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from './useAuth';
 
 export function useConnectAndLogin() {
-    const { SignMessage, address } = useWallet();
-    const { login } = useAuth();
+    const { SignMessage, address, setAddress, setAccounts } = useWallet();
+    const { login, logout } = useAuth();
 
     // 상태: 연결 여부
     const [connected, setConnected] = useState(false);
     const [loggingIn, setLoggingIn] = useState(false);
+
+    const [selectedMethod, setSelectedMethod] = useState<null | 'metamask' | 'privateKey'>(null);
 
     // 1️⃣ 단순 지갑 연결
     const connect = async (connectFunc: () => Promise<void>) => {
@@ -21,8 +23,11 @@ export function useConnectAndLogin() {
     };
 
     // 3️⃣ ⭐️ 단계별 처리까지 통합
-    const handleConnectAndLogin = async (connectFunc: () => Promise<void>) => {
+    const handleConnectAndLogin = async (method: 'metamask' | 'privateKey', connectFunc: () => Promise<void>) => {
         try {
+
+            setSelectedMethod(method);
+
             if (!connected) {
                 // 연결 단계
                 await connect(connectFunc);
@@ -45,11 +50,25 @@ export function useConnectAndLogin() {
         }
     };
 
+    const resetSelectedMethod = () => {
+        setConnected(false);
+        setLoggingIn(false);
+        setSelectedMethod(null);
+        // ✅ 컨텍스트 상태도 초기화
+        setAddress(null);
+        setAccounts([]);
+        logout();
+
+    };
+
+
     return {
         connected,
         loggingIn,
+        selectedMethod,
         connect,
         loginWithAddress,
         handleConnectAndLogin,
+        resetSelectedMethod,
     };
 }

@@ -19,12 +19,15 @@ export function useRegisterNFT() {
     const { address, wallet, provider } = useWallet();
     const { token, jwtAddress } = useAuth();
 
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleSubmit = async () => {
         if (!image || !title || !description || !address) {
             alert("모든 항목을 입력해주세요.");
             return;
         }
-
+        setIsSubmitting(true);
         try {
             // ✅ 1️⃣ Pinata 업로드
             const pinataResult = await uploadNFTToPinata({
@@ -120,11 +123,14 @@ export function useRegisterNFT() {
         } catch (err) {
             console.error(err);
             alert("업로드 실패" + (err as Error).message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return {
         image,
+        isSubmitting,
         title,
         description,
         category,
@@ -134,7 +140,9 @@ export function useRegisterNFT() {
         setCategory,
         handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             if (e.target.files && e.target.files[0]) {
-                setImage(e.target.files[0]);
+                const file = e.target.files[0];
+                setImage(file);
+                setImagePreviewUrl(URL.createObjectURL(file));
             }
         },
         handleAttributeChange: (index: number, field: "trait_type" | "value", value: string) => {
@@ -145,5 +153,6 @@ export function useRegisterNFT() {
         handleAddAttribute: () => setAttributes([...attributes, { trait_type: "", value: "" }]),
         handleRemoveAttribute: (index: number) => setAttributes(attributes.filter((_, i) => i !== index)),
         handleSubmit,
+        imagePreviewUrl,
     };
 }

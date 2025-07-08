@@ -26,7 +26,7 @@ export function useAuth() {
         if (!token) return;
         const exp = getTokenExp(token);
         if (exp && Date.now() >= exp) {
-            console.log("JWT expired, logging out");
+            console.log("JWT 만료 확인됨, 자동 로그아웃 처리 합니다");
             logout();
         }
     }, [token, logout]);
