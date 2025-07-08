@@ -21,8 +21,8 @@ export function TokenReward() {
             </button>
 
             <div>
-                <div>✅ 총 받은 Engage 횟수: {totalClaimEngage ?? '알 수 없음'}</div>
-                <div>✅ 총 받은 Auction 횟수: {totalClaimAuction ?? '알 수 없음'}</div>
+                <div>✅ 총 받은 Engage 횟수: {totalClaimEngage}</div>
+                <div>✅ 총 받은 Auction 횟수: {totalClaimAuction}</div>
             </div>
         </div>
     );

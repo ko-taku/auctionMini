@@ -46,6 +46,19 @@ let TokenService = class TokenService {
         const contractAddress = this.configService.get('ATTENDANCE_ADDRESS');
         return new ethers_1.ethers.Contract(contractAddress, AttendanceRewardMeta_json_1.default.abi, this.ethersProvider.wallet);
     }
+    async getClaimStatus(userAddress) {
+        let claim = await this.claimRepo.findOneBy({ address: userAddress });
+        if (!claim) {
+            return {
+                totalClaimEngage: 0,
+                totalClaimAuction: 0,
+            };
+        }
+        return {
+            totalClaimEngage: claim.totalClaimEngage ?? 0,
+            totalClaimAuction: claim.totalClaimAuction ?? 0,
+        };
+    }
     async reserve(type, userAddress) {
         const today = this.todayDate();
         let claim = await this.claimRepo.findOneBy({ address: userAddress });

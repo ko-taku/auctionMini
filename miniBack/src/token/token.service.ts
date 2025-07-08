@@ -52,6 +52,22 @@ export class TokenService {
         );
     }
 
+    async getClaimStatus(userAddress: string) {
+        let claim = await this.claimRepo.findOneBy({ address: userAddress });
+        if (!claim) {
+            return {
+                totalClaimEngage: 0,
+                totalClaimAuction: 0,
+            };
+        }
+
+        return {
+            totalClaimEngage: claim.totalClaimEngage ?? 0,
+            totalClaimAuction: claim.totalClaimAuction ?? 0,
+        }
+
+    }
+
     /** ========== 1️⃣ reserve ========== */
     async reserve(type: ClaimType, userAddress: string) {
         const today = this.todayDate();

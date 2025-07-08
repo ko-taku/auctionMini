@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { TokenService } from './token.service';
 import { Request as ExpressRequest } from 'express';
@@ -48,5 +48,11 @@ export class TokenController {
         @Body() body: RelayRequestDto
     ) {
         return this.tokenService.relay('auction', req.user.address, body);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('me')
+    async getMyClaim(@Req() req: AuthedRequest) {
+        return this.tokenService.getClaimStatus(req.user.address);
     }
 }

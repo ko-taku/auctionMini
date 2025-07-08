@@ -33,6 +33,9 @@ let TokenController = class TokenController {
     async relayAuction(req, body) {
         return this.tokenService.relay('auction', req.user.address, body);
     }
+    async getMyClaim(req) {
+        return this.tokenService.getClaimStatus(req.user.address);
+    }
 };
 exports.TokenController = TokenController;
 __decorate([
@@ -69,6 +72,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, relay_request_dto_1.RelayRequestDto]),
     __metadata("design:returntype", Promise)
 ], TokenController.prototype, "relayAuction", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('me'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TokenController.prototype, "getMyClaim", null);
 exports.TokenController = TokenController = __decorate([
     (0, common_1.Controller)('claim'),
     (0, common_1.UsePipes)(new common_1.ValidationPipe({ whitelist: true, forbidNonWhitelisted: true })),
