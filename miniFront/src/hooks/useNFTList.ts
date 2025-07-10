@@ -1,23 +1,10 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import type { NFTItem } from "../types/NFTItem";
 import NFTABI from "../abi/NFTContract.json";
 
 const NFT_CONTRACT_ADDRESS = import.meta.env.VITE_NFT_CONTRACT_ADDRESS;
 const RPC_URL = import.meta.env.VITE_RPC_URL;
-
-export type NFTItem = {
-    tokenId: string;
-    minter: string;
-    mintAtRaw: number;
-    mintedAt: string;
-    owner: string;
-    metadata: {
-        name: string;
-        description: string;
-        image: string;
-        [key: string]: any;
-    };
-};
 
 function formatKoreanTime(unixTime: number): string {
     return new Date(unixTime * 1000).toLocaleString('ko-KR', {
@@ -100,7 +87,7 @@ export function useNFTList() {
                     });
                 }
 
-                results.sort((a, b) => b.mintAtRaw - a.mintAtRaw);
+                results.sort((a, b) => (b.mintAtRaw ?? 0) - (a.mintAtRaw ?? 0));
 
                 setNftList(results);
             } catch (err) {

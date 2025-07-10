@@ -15,6 +15,7 @@ const pinata_module_1 = require("./pinata/pinata.module");
 const meta_module_1 = require("./meta/meta.module");
 const auth_module_1 = require("./auth/auth.module");
 const token_module_1 = require("./token/token.module");
+const auction_module_1 = require("./auction/auction.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const claim_entity_1 = require("./claim/claim.entity");
 let AppModule = class AppModule {
@@ -44,6 +45,7 @@ exports.AppModule = AppModule = __decorate([
             meta_module_1.MetaModule,
             auth_module_1.AuthModule,
             token_module_1.TokenModule,
+            auction_module_1.AuctionModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

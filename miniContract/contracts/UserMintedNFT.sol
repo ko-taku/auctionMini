@@ -71,4 +71,27 @@ contract UserMintedNFT is ERC721URIStorage, ERC2771Context, Ownable {
     function getAllTokenIds() public view returns (uint256[] memory) {
         return _allTokenIds;
     }
+
+    // ✅ ⭐️ 특정 주소 소유 NFT 배열 가져오기
+    function getTokensOfOwner(
+        address owner
+    ) public view returns (uint256[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 0; i < _allTokenIds.length; i++) {
+            if (ownerOf(_allTokenIds[i]) == owner) {
+                count++;
+            }
+        }
+
+        uint256[] memory result = new uint256[](count);
+        uint256 idx = 0;
+        for (uint256 i = 0; i < _allTokenIds.length; i++) {
+            if (ownerOf(_allTokenIds[i]) == owner) {
+                result[idx] = _allTokenIds[i];
+                idx++;
+            }
+        }
+
+        return result;
+    }
 }

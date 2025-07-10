@@ -19,7 +19,7 @@ const MainPage = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-10">
             <div className="bg-gray-800 border border-gray-700 rounded-xl shadow-xl w-full max-w-xl p-10 text-center min-h-[80vh]">
-                <h1 className="text-4xl font-bold text-gray-50 mb-4">NFT 등록</h1>
+                <h1 className="text-4xl font-bold text-gray-50 mb-4">Wallet Connect</h1>
                 <p className="text-gray-400 mb-8">지갑을 연결하여 NFT를 발행하세요</p>
 
                 <div className="flex flex-col space-y-4 mb-6">

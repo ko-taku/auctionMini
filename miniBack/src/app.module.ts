@@ -6,6 +6,7 @@ import { PinataModule } from './pinata/pinata.module';
 import { MetaModule } from './meta/meta.module';
 import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
+import { AuctionModule } from './auction/auction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Claim } from './claim/claim.entity';
 
@@ -34,6 +35,7 @@ import { Claim } from './claim/claim.entity';
     MetaModule,
     AuthModule,
     TokenModule,
+    AuctionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

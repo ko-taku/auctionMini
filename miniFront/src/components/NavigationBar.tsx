@@ -19,7 +19,7 @@ const NavigationBar = () => {
                         to="/"
                         className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
                     >
-                        지갑 연결
+                        Wallet Connect
                     </Link>
                 </li>
                 <li>
@@ -27,7 +27,7 @@ const NavigationBar = () => {
                         to="/auction"
                         className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
                     >
-                        경매
+                        Auction
                     </Link>
                 </li>
                 <li>
@@ -35,7 +35,7 @@ const NavigationBar = () => {
                         to="/register"
                         className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
                     >
-                        NFT 등록
+                        NFT Register
                     </Link>
                 </li>
                 <li>
@@ -43,7 +43,15 @@ const NavigationBar = () => {
                         to="/nftlist"
                         className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
                     >
-                        NFT 리스트
+                        NFT List
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        to="/mynftlist"
+                        className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
+                    >
+                        My NFT
                     </Link>
                 </li>
                 <li>
@@ -51,7 +59,7 @@ const NavigationBar = () => {
                         to="/tokenReward"
                         className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
                     >
-                        Daily 토큰
+                        Daily Token
                     </Link>
                 </li>
             </ul>

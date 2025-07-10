@@ -7,6 +7,7 @@
     "deployCustomForwarder": "npx hardhat run scripts/deployCustomForwarder.ts --network kairos",
     "NFTMintDeploy": "npx hardhat run scripts/NFTMintDeploy.ts --network kairos",
     "AttendanceDeploy": "npx hardhat run scripts/AttendanceDeploy.ts --network kairos",
+    "AuctionDeploy": "npx hardhat run scripts/AuctionDeploy.ts --network kairos",
     "compile": "npx hardhat compile",
     "test": "npx hardhat test"
   },
