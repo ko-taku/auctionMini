@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,7 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
 import { AuctionModule } from './auction/auction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Claim } from './claim/claim.entity';
+import { BidModule } from './bid/bid.module';
+
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { Claim } from './claim/claim.entity';
     }),
     // ✅ TypeORM 전역 DB 연결
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule,
+        ScheduleModule.forRoot(),
+      ],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
@@ -26,7 +30,7 @@ import { Claim } from './claim/claim.entity';
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        entities: [Claim],
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: false, // 개발 시 true도 가능, 운영에서는 false 권장
       }),
     }),
@@ -36,6 +40,7 @@ import { Claim } from './claim/claim.entity';
     AuthModule,
     TokenModule,
     AuctionModule,
+    BidModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,7 +8,10 @@ export type AuctionItem = {
     creator: string;
     startPrice: string;
     highestBid?: string;
+    minIncrement: string;         // ✅ 최소 상승가
+    totalBids?: number;           // ✅ 총 입찰 수
     endAt: string;
     contractAddress: string;
     tokenId: string;
+    active: boolean;
 };

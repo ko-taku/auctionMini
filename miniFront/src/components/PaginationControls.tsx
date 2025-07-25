@@ -11,7 +11,6 @@ export default function PaginationControls({
     totalPages,
     goToPage,
 }: PaginationControlsProps) {
-    if (totalPages <= 1) return null;
 
     return (
         <div className="flex items-center justify-center space-x-2 mt-14">

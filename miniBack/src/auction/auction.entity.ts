@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { BidState } from '../bid/bidState.entity';
 
 @Entity({ name: 'auction_register' })
 export class Auction {
-    @PrimaryGeneratedColumn({ name: 'id' })
+    @Column({ primary: true })
     id: number;
 
     @Column({ name: 'creator' })
@@ -47,4 +48,10 @@ export class Auction {
 
     @Column({ name: 'escrowed_at', type: 'timestamp', nullable: true })
     escrowedAt: Date;  // ✅ 유저가 escrow 전송한 시점
+
+    @Column({ name: 'active', default: true })
+    active: boolean;
+
+    @OneToOne(() => BidState, (state) => state.auction)
+    state: BidState;
 }

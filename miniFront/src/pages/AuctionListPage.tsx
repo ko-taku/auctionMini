@@ -4,10 +4,13 @@ import AuctionCard from "../components/AuctionCard";
 import PaginationControls from "../components/PaginationControls";
 import { useAuctionList } from "../hooks/useAuctionList";
 import "../css/index.css";
+import { useState } from "react";
 
 export default function AuctionPage() {
     const { auctionList, loading } = useAuctionList();
     const { currentPage, totalPages, currentData, goToPage } = usePagination(auctionList, 9);
+
+    const [selectedAuctionId, setSelectedAuctionId] = useState<number | null>(null);
 
     if (loading) {
         return (
@@ -18,7 +21,8 @@ export default function AuctionPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 px-4 py-12">
+        <div className="min-h-screen bg-gray-900 px-4 py-12"
+            onClick={() => setSelectedAuctionId(null)}>
             <h1 className="text-4xl font-bold text-center text-gray-100 mb-10">경매 목록</h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -26,10 +30,10 @@ export default function AuctionPage() {
                     <AuctionCard
                         key={auction.id}
                         auction={auction}
-                        onBidClick={(item) => {
-                            console.log("입찰 버튼 클릭!", item);
-                            // 여기에 모달 열기 등 입찰 동작 추가 가능
-                        }}
+                        detailLevel="auction-list"
+                        isSelected={selectedAuctionId === auction.id}
+                        onSelect={() => setSelectedAuctionId(auction.id)}
+                        onCancel={() => setSelectedAuctionId(null)}
                     />
                 ))}
             </div>

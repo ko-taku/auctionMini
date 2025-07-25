@@ -56,6 +56,14 @@ const NavigationBar = () => {
                 </li>
                 <li>
                     <Link
+                        to="/mybidlist"
+                        className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
+                    >
+                        My Bid List
+                    </Link>
+                </li>
+                <li>
+                    <Link
                         to="/tokenReward"
                         className="flex items-center justify-center h-full text-gray-100 hover:text-white hover:font-bold transition-colors"
                     >

@@ -55,30 +55,30 @@ export default function NFTCard({
                             {nft.metadata.description}
                         </p>
 
-                        <div className="mt-4 border-t border-gray-700 pt-4 text-sm text-gray-400">
-                            <div className="grid gap-y-2" style={{ gridTemplateColumns: '25% 75%' }}>
-
+                        <div className="mt-4 border-t border-gray-700 pt-4 text-sm text-gray-300">
+                            <div className="grid gap-y-2" style={{ gridTemplateColumns: '30% 70%' }}>
                                 {detailLevel === "full" && nft.minter && (
                                     <>
-                                        <div className="pr-2 text-center text-gray-300 break-words">발행자</div>
-                                        <div className="pl-2 break-words">{nft.minter}</div>
+                                        <div className="text-left pr-2 text-gray-400">발행자</div>
+                                        <div className="text-center break-words">{nft.minter}</div>
                                     </>
                                 )}
 
                                 {detailLevel === "full" && nft.mintedAt && (
                                     <>
-                                        <div className="pr-2 text-center text-gray-300 break-words">발행 날짜</div>
-                                        <div className="pl-2 break-words">{nft.mintedAt}</div>
+                                        <div className="text-left pr-2 text-gray-400">발행 날짜</div>
+                                        <div className="text-center break-words">{nft.mintedAt}</div>
                                     </>
                                 )}
 
-                                <div className="pr-2 text-center text-gray-300 break-words">소유자</div>
-                                <div className="pl-2 break-words">{nft.owner}</div>
+                                <div className="text-left pr-2 text-gray-400">소유자</div>
+                                <div className="text-center break-words">{nft.owner}</div>
 
-                                <div className="pr-2 text-center text-gray-300 break-words">Token ID</div>
-                                <div className="pl-2 break-words">{nft.tokenId}</div>
+                                <div className="text-left pr-2 text-gray-400">Token ID</div>
+                                <div className="text-center break-words">{nft.tokenId}</div>
                             </div>
                         </div>
+
                     </div>
                 </>
             )}

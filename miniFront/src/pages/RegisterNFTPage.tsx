@@ -1,6 +1,6 @@
 import { useRegisterNFT } from "../hooks/useRegisterNFT";
 import '../css/index.css';
-import { Listbox } from '@headlessui/react'
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react'
 import { ChevronUpDownIcon, CheckIcon } from '@heroicons/react/20/solid'
 
 const categories = [
@@ -82,7 +82,7 @@ const RegisterNFTPage = () => {
                         <label className="block text-gray-300 mb-2">카테고리</label>
                         <Listbox value={category} onChange={setCategory}>
                             <div className="relative">
-                                <Listbox.Button className="
+                                <ListboxButton className="
         relative w-full cursor-default rounded bg-gray-700 border border-gray-600
         py-2 pl-4 pr-10 text-left text-gray-200
         focus:outline-none focus:ring-2 focus:ring-blue-500 transition
@@ -93,15 +93,15 @@ const RegisterNFTPage = () => {
                                     <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                                         <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                                     </span>
-                                </Listbox.Button>
+                                </ListboxButton>
 
-                                <Listbox.Options className="
+                                <ListboxOptions className="
         absolute mt-1 max-h-60 w-full overflow-auto
         rounded bg-gray-800 border border-gray-700 shadow-lg z-10
         focus:outline-none
       ">
                                     {categories.map((item) => (
-                                        <Listbox.Option
+                                        <ListboxOption
                                             key={item.id}
                                             value={item.id}
                                             className={({ active, selected }) => `
@@ -121,9 +121,9 @@ const RegisterNFTPage = () => {
                                                     )}
                                                 </>
                                             )}
-                                        </Listbox.Option>
+                                        </ListboxOption>
                                     ))}
-                                </Listbox.Options>
+                                </ListboxOptions>
                             </div>
                         </Listbox>
                     </div>

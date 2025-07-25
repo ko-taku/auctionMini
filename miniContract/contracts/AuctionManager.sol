@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 
 contract AuctionManager is ERC2771Context, Ownable {
     IERC20 public auctionToken;
@@ -114,8 +115,69 @@ contract AuctionManager is ERC2771Context, Ownable {
     }
 
     //Place Bid
+    // function bid(uint256 auctionId, uint256 amount) external {
+    //     address bidder = _msgSender();
+    //     Auction storage auction = auctions[auctionId];
+    //     require(auction.active, "Auction inactive");
+    //     require(block.timestamp < auction.endTime, "Auction ended");
+
+    //     uint256 minBid = (auction.highestBid == 0)
+    //         ? auction.startPrice
+    //         : auction.highestBid + auction.minIncrement;
+
+    //     require(amount >= minBid, "Bid too low");
+
+    //     //Transfer bid amount to contract
+    //     auctionToken.transferFrom(bidder, address(this), amount);
+
+    //     //Refund previous bidder
+    //     if (auction.highestBidder != address(0)) {
+    //         auctionToken.transfer(auction.highestBidder, auction.highestBid);
+    //     }
+
+    //     auction.highestBid = amount;
+    //     auction.highestBidder = bidder;
+
+    //     emit BidPlaced(auctionId, bidder, amount);
+    // }
+
+    // Standard Bid (requires approve)
     function bid(uint256 auctionId, uint256 amount) external {
         address bidder = _msgSender();
+        _processBid(auctionId, amount, bidder);
+    }
+
+    // Permit-based Gasless Bid
+    function bidWithPermit(
+        uint256 auctionId,
+        uint256 amount,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external {
+        address bidder = _msgSender();
+
+        // Permit: approve contract to spend tokens
+        IERC20Permit(address(auctionToken)).permit(
+            bidder,
+            address(this),
+            amount,
+            deadline,
+            v,
+            r,
+            s
+        );
+
+        _processBid(auctionId, amount, bidder);
+    }
+
+    // Internal Bid Logic
+    function _processBid(
+        uint256 auctionId,
+        uint256 amount,
+        address bidder
+    ) internal {
         Auction storage auction = auctions[auctionId];
         require(auction.active, "Auction inactive");
         require(block.timestamp < auction.endTime, "Auction ended");
@@ -126,10 +188,8 @@ contract AuctionManager is ERC2771Context, Ownable {
 
         require(amount >= minBid, "Bid too low");
 
-        //Transfer bid amount to contract
         auctionToken.transferFrom(bidder, address(this), amount);
 
-        //Refund previous bidder
         if (auction.highestBidder != address(0)) {
             auctionToken.transfer(auction.highestBidder, auction.highestBid);
         }
@@ -184,7 +244,10 @@ contract AuctionManager is ERC2771Context, Ownable {
     function cancelAuction(uint256 auctionId) external {
         Auction storage auction = auctions[auctionId];
         require(auction.active, "Auction inactive");
-        require(auction.seller == _msgSender(), "Not seller");
+        require(
+            auction.seller == _msgSender() || _msgSender() == owner(),
+            "Not authorized"
+        );
         require(
             auction.highestBidder == address(0),
             "Cannot caancel after bids"
