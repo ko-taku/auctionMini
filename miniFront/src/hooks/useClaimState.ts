@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useClaim } from './useClaim';
 import { useAuthContext } from "../contexts/AuthContext";
+import { useTokenBalance } from './useTokenBalances';
 
 export function useClaimState() {
     const { claimEngage, claimAuction } = useClaim();
@@ -11,6 +12,13 @@ export function useClaimState() {
 
     const [totalClaimEngage, setTotalClaimEngage] = useState<number | null>(null);
     const [totalClaimAuction, setTotalClaimAuction] = useState<number | null>(null);
+
+    const {
+        engageBalance,
+        auctionBalance,
+        setEngageBalance,
+        setAuctionBalance,
+    } = useTokenBalance();
 
 
     // ✅ 1️⃣ 최초 마운트 시 서버에서 내 출석 상태 fetch
@@ -42,6 +50,7 @@ export function useClaimState() {
             console.log('성공?: ', res);
             alert("✅ Engage 출석 완료!");
             setTotalClaimEngage((prev => (prev ?? 0) + 1));
+            setEngageBalance((prev) => (Number(prev) + 100).toString()); // ✅ 임시로 +100 반영
         } catch (err) {
             alert(`❌ 오류: ${(err as Error).message}`);
         } finally {
@@ -56,6 +65,7 @@ export function useClaimState() {
             console.log('성공?: ', res);
             alert("✅ Auction 출석 완료!");
             setTotalClaimAuction((prev => (prev ?? 0) + 1));
+            setAuctionBalance((prev) => (Number(prev) + 100).toString()); // ✅ 임시로 +100 반영
         } catch (err) {
             alert(`❌ 오류: ${(err as Error).message}`);
         } finally {
@@ -70,5 +80,9 @@ export function useClaimState() {
         totalClaimAuction,
         handleEngage,
         handleAuction,
+        engageBalance,
+        auctionBalance,
+        setEngageBalance,
+        setAuctionBalance,
     };
 }

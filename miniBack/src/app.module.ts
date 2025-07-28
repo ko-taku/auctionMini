@@ -10,6 +10,7 @@ import { TokenModule } from './token/token.module';
 import { AuctionModule } from './auction/auction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BidModule } from './bid/bid.module';
+import { NftModule } from './nft/nft.module';
 
 
 @Module({
@@ -41,6 +42,7 @@ import { BidModule } from './bid/bid.module';
     TokenModule,
     AuctionModule,
     BidModule,
+    NftModule,
   ],
   controllers: [AppController],
   providers: [AppService],

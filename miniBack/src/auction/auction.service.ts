@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThanOrEqual } from 'typeorm';
+import { Repository, LessThanOrEqual, DataSource } from 'typeorm';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { Logger } from '@nestjs/common';
@@ -31,6 +31,7 @@ export class AuctionService {
         private readonly metaService: MetaService,
         @Inject(forwardRef(() => BidService))
         private readonly bidService: BidService, // 👈 의존성 주입, forwardRef :양방향 참조 방지용으로 사용
+        private readonly dataSource: DataSource,
     ) {
         // ✅ Relayer wallet 연결
         this.wallet = new ethers.Wallet(
@@ -255,5 +256,64 @@ export class AuctionService {
                 this.logger.error(`❌ 종료 처리 실패 (auctionId: ${auction.id})`, err);
             }
         }
+    }
+
+
+    async getAuctionOverview() {
+        const dailyStats = await this.dataSource.query(`
+      WITH dates AS (
+        SELECT generate_series(
+          current_date - INTERVAL '6 days',
+          current_date,
+          '1 day'
+        )::date AS date
+      )
+
+      SELECT
+        d.date,
+        COUNT(ar.id) AS registrations,
+        COALESCE(SUM(CAST(abs.current_bid AS NUMERIC)), 0) AS total_bids,
+        COALESCE(SUM(abs.bid_count), 0) AS total_bid_count,
+        MAX(CAST(abs.current_bid AS NUMERIC)) AS highest_bid,
+        COUNT(DISTINCT abu.user_address) AS unique_users,
+        AVG(CAST(abu.user_max_bid AS NUMERIC)) AS avg_user_max_bid
+      FROM dates d
+      LEFT JOIN auction_register ar ON DATE(ar.created_at) = d.date
+      LEFT JOIN auction_bid_state abs ON abs.auction_id = ar.id
+      LEFT JOIN auction_bid_user abu ON abu.auction_id = ar.id
+      GROUP BY d.date
+      ORDER BY d.date ASC
+    `);
+
+        const todayTopAuction = await this.dataSource.query(`
+      SELECT
+        ar.id AS auction_id,
+        ar.nft_name,
+        ar.nft_image,
+        CAST(abs.current_bid AS NUMERIC) AS highest_bid
+      FROM auction_bid_state abs
+      JOIN auction_register ar ON ar.id = abs.auction_id
+      WHERE abs.end_at::date = current_date
+      ORDER BY highest_bid DESC
+      LIMIT 1
+    `);
+
+        const todayHighestBid = todayTopAuction?.[0]?.highest_bid ?? 0;
+
+        this.logger.log('📊 dailyStats 결과:', dailyStats);
+
+        return {
+            dailyStats: dailyStats.map((row: any) => ({
+                date: row.date,
+                registrations: Number(row.registrations),
+                totalBids: Number(row.total_bids),
+                totalBidCount: Number(row.total_bid_count),
+                highestBid: Number(row.highest_bid ?? 0),
+                uniqueUsers: Number(row.unique_users),
+                avgUserMaxBid: Number(row.avg_user_max_bid ?? 0),
+            })),
+            todayHighestBid,
+            todayTopAuction: todayTopAuction?.[0] ?? null,
+        };
     }
 }

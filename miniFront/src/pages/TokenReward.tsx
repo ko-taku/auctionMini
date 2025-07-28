@@ -1,4 +1,6 @@
+import { useTokenBalance } from "../hooks/useTokenBalances";
 import { useClaimState } from '../hooks/useClaimState';
+import { useState } from "react";
 import '../css/index.css';
 
 export function TokenReward() {
@@ -9,6 +11,8 @@ export function TokenReward() {
         totalClaimAuction,
         handleEngage,
         handleAuction,
+        engageBalance,
+        auctionBalance,
     } = useClaimState();
 
     return (
@@ -41,10 +45,17 @@ export function TokenReward() {
 
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 w-full max-w-sm">
                 <div className="mb-2">
-                    총 받은 Engag 보상 횟수: <span className="font-bold">{totalClaimEngage}</span>
+                    총 받은 Engage 보상 횟수: <span className="font-bold">{totalClaimEngage}</span>
                 </div>
                 <div>
                     총 받은 Auction 보상 횟수: <span className="font-bold">{totalClaimAuction}</span>
+                </div>
+                <hr className="border-gray-600 my-2" />
+                <div>
+                    My EngageToken: {Number(engageBalance).toLocaleString()} EGTK
+                </div>
+                <div>
+                    My AuctionToken: {Number(auctionBalance).toLocaleString()} ACTK
                 </div>
             </div>
         </div>

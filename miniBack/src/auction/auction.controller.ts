@@ -45,4 +45,12 @@ export class AuctionController {
     async getAuctionList(@Req() req: AuthedRequest) {
         return await this.auctionService.getAuctionList();
     }
+
+    /** ✅ 통합 통계 API: 최근 7일 */
+    @UseGuards(JwtAuthGuard)
+    @Get('stats/overview')
+    async getAuctionOverview(@Req() req: AuthedRequest) {
+        console.log('✅ getAuctionOverview called by:', req.user.address);
+        return await this.auctionService.getAuctionOverview();
+    }
 }
