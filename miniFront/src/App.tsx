@@ -1,3 +1,4 @@
+import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import MainPage from './pages/MainPage';
 import AuctionPage from './pages/AuctionListPage';
@@ -8,7 +9,9 @@ import NavigationBar from './components/NavigationBar';
 import NFTListPage from './pages/NFTListPage';
 import { TokenReward } from './pages/TokenReward';
 import MyNFTListPage from './pages/MyNFTListPage';
-import MyBidList from './pages/UserBidsListPage'
+import MyBidList from './pages/UserBidsListPage';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 //export default면 중괄호 없이, named export면 중괄호로 import
 function App() {

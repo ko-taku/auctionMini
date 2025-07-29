@@ -7,6 +7,7 @@ import {
     LineController,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import type { ScriptableContext, TooltipItem } from 'chart.js';
@@ -20,7 +21,8 @@ ChartJS.register(
     LineElement,
     LineController,
     Tooltip,
-    Legend
+    Legend,
+    Filler
 );
 
 export function DailyHighestBidChart() {
@@ -59,7 +61,7 @@ export function DailyHighestBidChart() {
                 callbacks: {
                     ...defaultLineChartOptions.plugins?.tooltip?.callbacks,
                     label: (tooltipItem: TooltipItem<'line'>) =>
-                        `최고 입찰가: ${tooltipItem.parsed.y} ACTK`,
+                        `최고 입찰가: ${tooltipItem.parsed.y} ATK`,
                 },
             },
         },
@@ -67,7 +69,7 @@ export function DailyHighestBidChart() {
 
     return (
         <div className="bg-gray-900 rounded-xl shadow p-6 min-h-[320px]">
-            <h2 className="text-lg font-bold mb-2 text-white">날짜별 최고 입찰가</h2>
+            <h2 className="text-lg font-bold mb-2 text-white">highest bid</h2>
             <Line data={data} options={options} />
         </div>
     );

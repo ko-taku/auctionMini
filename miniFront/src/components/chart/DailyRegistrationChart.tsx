@@ -7,6 +7,7 @@ import {
     LineController,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import type { ScriptableContext, TooltipItem } from 'chart.js';
@@ -20,7 +21,8 @@ ChartJS.register(
     LineElement,
     LineController,
     Tooltip,
-    Legend
+    Legend,
+    Filler
 );
 
 export function DailyRegistrationChart() {
@@ -67,7 +69,7 @@ export function DailyRegistrationChart() {
 
     return (
         <div className="bg-gray-900 rounded-xl shadow p-6 min-h-[320px]">
-            <h2 className="text-lg font-bold mb-2 text-white">최근 7일간 경매 등록 수</h2>
+            <h2 className="text-lg font-bold mb-2 text-white">auction amount</h2>
             <Line data={data} options={options} />
         </div>
     );

@@ -1,44 +1,22 @@
 import React from "react";
-import { DailyRegistrationChart } from '../components/chart/DailyRegistrationChart';
-import { DailyBidAmountChart } from '../components/chart/DailyBidAmountChart';
-import { DailyHighestBidChart } from '../components/chart/DailyHighestBidChart';
-import { DailyBidCountChart } from '../components/chart/DailyBidCountChart';
-import { UserMaxBidAvgChart } from '../components/chart/UserMaxBidAvgChart';
 import { usePagination } from "../hooks/usePagination";
 import AuctionCard from "../components/AuctionCard";
 import PaginationControls from "../components/PaginationControls";
 import { useAuctionList } from "../hooks/useAuctionList";
 import "../css/index.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ChartCarousel } from "../components/chart/ChartCarousel";
+import { SearchBox } from "../components/utils/searchBox";
+import RightSideCollections from "../components/RightSideCollections";
+import { SortToolbar } from "../components/SortToolbar";
+import { useAuctionSort } from "../hooks/useAuctionSort";
 
 export default function AuctionPage() {
-    const { auctionList, loading } = useAuctionList();
-    const { currentPage, totalPages, currentData, goToPage } = usePagination(auctionList, 9);
+    const { auctionList, filteredList, searchQuery, setSearchQuery, loading } = useAuctionList();
 
     const [selectedAuctionId, setSelectedAuctionId] = useState<number | null>(null);
-
-    const chartComponents = [
-        <DailyRegistrationChart key="chart1" />,
-        <DailyBidAmountChart key="chart2" />,
-        <DailyHighestBidChart key="chart3" />,
-        <DailyBidCountChart key="chart4" />,
-        <UserMaxBidAvgChart key="chart5" />
-    ];
-
-    const [startIndex, setStartIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setStartIndex((prev) => (prev + 2) % chartComponents.length);
-        }, 10000); // 10초 간격
-
-        return () => clearInterval(interval); // 언마운트 시 정리
-    }, []);
-
-    const visibleCharts = [
-        chartComponents[startIndex],
-        chartComponents[(startIndex + 1) % chartComponents.length]
-    ];
+    const { sort, setSort, sortedList } = useAuctionSort(filteredList);
+    const { currentPage, totalPages, currentData, goToPage } = usePagination(sortedList, 9);
 
     if (loading) {
         return (
@@ -51,23 +29,59 @@ export default function AuctionPage() {
     return (
         <div className="min-h-screen bg-gray-900 px-4 py-12"
             onClick={() => setSelectedAuctionId(null)}>
-            <h1 className="text-4xl font-bold text-center text-gray-100 mb-10">경매 목록</h1>
+            <h1 className="text-4xl text-center text-gray-100 mb-10">Auction List</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto px-4">
-                {visibleCharts}
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_300px] gap-6 max-w-7xl mx-auto">
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {currentData.map((auction) => (
-                    <AuctionCard
-                        key={auction.id}
-                        auction={auction}
-                        detailLevel="auction-list"
-                        isSelected={selectedAuctionId === auction.id}
-                        onSelect={() => setSelectedAuctionId(auction.id)}
-                        onCancel={() => setSelectedAuctionId(null)}
-                    />
-                ))}
+                <div className="bg-gray-800 p-4">
+                    <div className="flex items-center gap-4 mb-6">
+                        <h2 className="text-xl font-bold text-white leading-none">
+                            Auction Marcket
+                        </h2>
+
+                        <div className="flex-1 translate-y-[15px] translate-x-[-15px]">
+                            <SearchBox
+                                searchQuery={searchQuery}
+                                setSearchQuery={setSearchQuery}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="my-6 max-w-6xl mx-auto relative">
+                        <ChartCarousel />
+                    </div>
+                    <h2 className="mt-8 ml-2 text-base uppercase text-gray-100 tracking-widest mb-2">
+                        COLLECTION
+                    </h2>
+                    <p className="ml-2 mb-5 text-sm text-gray-400 tracking-widest mb-2">
+                        welcome to auction marcket
+                    </p>
+                    <div className="ml-2 mt-2 mb-5">
+                        <SortToolbar selected={sort} onChange={setSort} />
+                    </div>
+
+                    {loading ? (
+                        <div>로딩 중...</div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                            {currentData.map((auction) => (
+                                <AuctionCard
+                                    key={auction.id}
+                                    auction={auction}
+                                    detailLevel="auction-list"
+                                    isSelected={selectedAuctionId === auction.id}
+                                    onSelect={() => setSelectedAuctionId(auction.id)}
+                                    onCancel={() => setSelectedAuctionId(null)}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* 오른쪽 */}
+                <aside className="bg-gray-800 rounded-xl h-fit">
+                    <RightSideCollections />
+                </aside>
             </div>
 
             <PaginationControls

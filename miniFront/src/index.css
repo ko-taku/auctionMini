@@ -1,0 +1,21 @@
+.slick-dots li.slick-active div {
+    background: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* 화살표를 차트 내부 가운데로 정렬 */
+.slick-prev,
+.slick-next {
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    opacity: 0.7;
+}
+
+.slick-prev {
+    left: 15px !important;
+}
+
+.slick-next {
+    right: 15px !important;
+}

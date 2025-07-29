@@ -76,16 +76,16 @@ export default function AuctionCard({
                 <div className="mt-4 border-t border-gray-700 pt-4 text-sm text-gray-300">
                     <div className="grid gap-y-2" style={{ gridTemplateColumns: '30% 70%' }}>
                         <div className="text-left pr-2 text-gray-400">시작가</div>
-                        <div className="text-center break-words">{auction.startPrice}</div>
+                        <div className="text-center break-words">{auction.startPrice} ATK</div>
 
                         <div className="text-left pr-2 text-gray-400">현재가</div>
-                        <div className="text-center break-words">{auction.highestBid}</div>
+                        <div className="text-center break-words">{auction.highestBid !== null ? auction.highestBid : auction.startPrice} ATK</div>
 
                         <div className="text-left pr-2 text-gray-400">최소 상승가</div>
-                        <div className="text-center break-words">{auction.minIncrement}</div>
+                        <div className="text-center break-words">{auction.minIncrement} ATK</div>
 
                         <div className="text-left pr-2 text-gray-400">총 입찰 수</div>
-                        <div className="text-center break-words">{auction.totalBids}</div>
+                        <div className="text-center break-words">{auction.totalBids} 건</div>
 
                         <div className="text-left pr-2 text-gray-400">남은 시간</div>
                         <div className="text-center break-words">
@@ -97,7 +97,7 @@ export default function AuctionCard({
                             {auction.creator?.slice(0, 10)}...{auction.creator?.slice(-6)}
                         </div>
 
-                        <div className="text-left pr-2 text-gray-400">Auction ID</div>
+                        <div className="text-left pr-2 text-gray-400">경매번호</div>
                         <div className="text-center break-words">{auction.id}</div>
 
                         <div className="text-left pr-2 text-gray-400">Token ID</div>

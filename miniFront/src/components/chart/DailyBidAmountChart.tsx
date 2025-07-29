@@ -8,6 +8,7 @@ import {
     LineController,
     Tooltip,
     Legend,
+    Filler, // ✅ 이거 추가
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import type { ScriptableContext } from 'chart.js';
@@ -22,7 +23,8 @@ ChartJS.register(
     LineElement,
     LineController,
     Tooltip,
-    Legend
+    Legend,
+    Filler, // ✅ 이거 추가
 );
 
 export function DailyBidAmountChart() {
@@ -62,7 +64,7 @@ export function DailyBidAmountChart() {
                 callbacks: {
                     ...defaultLineChartOptions.plugins?.tooltip?.callbacks,
                     label: (tooltipItem: TooltipItem<'line'>) =>
-                        `총 입찰액: ${tooltipItem.parsed.y} ACTK`,
+                        `총 입찰액: ${tooltipItem.parsed.y} ATK`,
                 },
             },
         },
@@ -70,7 +72,7 @@ export function DailyBidAmountChart() {
 
     return (
         <div className="bg-gray-900 rounded-xl shadow p-6 min-h-[320px]">
-            <h2 className="text-lg font-bold mb-2 text-white">최근 7일간 낙찰 총액</h2>
+            <h2 className="text-lg font-bold mb-2 text-white">total volume</h2>
             <Line data={data} options={options} />
         </div>
     );

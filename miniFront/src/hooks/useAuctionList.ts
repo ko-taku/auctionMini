@@ -6,6 +6,7 @@ export function useAuctionList() {
     const { token } = useAuthContext();
     const [loading, setLoading] = useState(true);
     const [auctionList, setAuctionList] = useState<AuctionItem[]>([]);
+    const [searchQuery, setSearchQuery] = useState(""); // ✅ 검색어 상태 추가
 
     useEffect(() => {
         const fetchAuctions = async () => {
@@ -36,5 +37,16 @@ export function useAuctionList() {
         fetchAuctions();
     }, []);
 
-    return { auctionList, loading };
+    // ✅ 검색어 기준으로 필터링된 리스트 반환
+    const filteredList = auctionList.filter(item =>
+        item.nftMetadata.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return {
+        auctionList,       // 전체 목록 (필터링 안된 원본)
+        filteredList,      // 검색어로 필터링된 목록
+        loading,
+        searchQuery,
+        setSearchQuery,
+    };
 }

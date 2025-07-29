@@ -7,6 +7,7 @@ import {
     LineController,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import type { ScriptableContext, TooltipItem } from 'chart.js';
@@ -20,7 +21,8 @@ ChartJS.register(
     LineElement,
     LineController,
     Tooltip,
-    Legend
+    Legend,
+    Filler
 );
 
 export function UserMaxBidAvgChart() {
@@ -59,7 +61,7 @@ export function UserMaxBidAvgChart() {
                 callbacks: {
                     ...defaultLineChartOptions.plugins?.tooltip?.callbacks,
                     label: (tooltipItem: TooltipItem<'line'>) =>
-                        `평균 최대 입찰가: ${tooltipItem.parsed.y} ACTK`,
+                        `평균 최대 입찰가: ${tooltipItem.parsed.y} ATK`,
                 },
             },
         },
@@ -67,7 +69,7 @@ export function UserMaxBidAvgChart() {
 
     return (
         <div className="bg-gray-900 rounded-xl shadow p-6 min-h-[320px]">
-            <h2 className="text-lg font-bold mb-2 text-white">유저 평균 최대 입찰가</h2>
+            <h2 className="text-lg font-bold mb-2 text-white">average bid amount</h2>
             <Line data={data} options={options} />
         </div>
     );
