@@ -1,0 +1,7 @@
+{
+  "address": "0x611b99c40601093Cf83d103AeabFC3b4d31b8860",
+  "forwarder": "0x6DDEb1439358755f5Ca8D1a5E40DfaC1036058Ba",
+  "auctionManager": "0x62AD6696fBCbbb353c263d56Ce70a16ce4a15C42",
+  "customVRF": "0x284571a85C596e6f2F9807230a2c1751D77D72Ad",
+  "network": "https://public-en-kairos.node.kaia.io"
+}
