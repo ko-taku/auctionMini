@@ -61,7 +61,7 @@ export function UserMaxBidAvgChart() {
                 callbacks: {
                     ...defaultLineChartOptions.plugins?.tooltip?.callbacks,
                     label: (tooltipItem: TooltipItem<'line'>) =>
-                        `평균 최대 입찰가: ${tooltipItem.parsed.y} ATK`,
+                        `평균 최대 입찰가: ${Number(tooltipItem.parsed.y).toFixed(2)} ATK`,
                 },
             },
         },

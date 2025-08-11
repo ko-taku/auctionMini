@@ -259,44 +259,77 @@ export class AuctionService {
     }
 
 
+    // AuctionService.ts 안의 getAuctionOverview() 전체 교체
+
     async getAuctionOverview() {
+        // ⚠️ 필요 시 'Asia/Seoul'로 일괄 정규화하고 싶으면 아래 tz를 사용하세요.
+        // const tz = 'Asia/Seoul';
+
         const dailyStats = await this.dataSource.query(`
-      WITH dates AS (
-        SELECT generate_series(
-          current_date - INTERVAL '6 days',
-          current_date,
-          '1 day'
-        )::date AS date
-      )
-
+    WITH dates AS (
+      SELECT generate_series(
+        current_date - INTERVAL '6 days',
+        current_date,
+        '1 day'
+      )::date AS date
+    ),
+    -- 1) 경매 등록 수 (중복 없음)
+    regs AS (
       SELECT
-        d.date,
-        COUNT(ar.id) AS registrations,
-        COALESCE(SUM(CAST(abs.current_bid AS NUMERIC)), 0) AS total_bids,
-        COALESCE(SUM(abs.bid_count), 0) AS total_bid_count,
-        MAX(CAST(abs.current_bid AS NUMERIC)) AS highest_bid,
-        COUNT(DISTINCT abu.user_address) AS unique_users,
-        AVG(CAST(abu.user_max_bid AS NUMERIC)) AS avg_user_max_bid
-      FROM dates d
-      LEFT JOIN auction_register ar ON DATE(ar.created_at) = d.date
-      LEFT JOIN auction_bid_state abs ON abs.auction_id = ar.id
-      LEFT JOIN auction_bid_user abu ON abu.auction_id = ar.id
-      GROUP BY d.date
-      ORDER BY d.date ASC
-    `);
-
-        const todayTopAuction = await this.dataSource.query(`
+        DATE(ar.created_at) AS date,
+        COUNT(*) AS registrations
+      FROM auction_register ar
+      GROUP BY 1
+    ),
+    -- 2) 경매 상태 집계 (경매별 1행 가정)
+    state AS (
       SELECT
-        ar.id AS auction_id,
-        ar.nft_name,
-        ar.nft_image,
-        CAST(abs.current_bid AS NUMERIC) AS highest_bid
+        DATE(ar.created_at) AS date,
+        SUM(CAST(abs.current_bid AS NUMERIC)) AS total_bids,
+        SUM(abs.bid_count)                    AS total_bid_count,
+        MAX(CAST(abs.current_bid AS NUMERIC)) AS highest_bid
       FROM auction_bid_state abs
       JOIN auction_register ar ON ar.id = abs.auction_id
-      WHERE abs.end_at::date = current_date
-      ORDER BY highest_bid DESC
-      LIMIT 1
-    `);
+      GROUP BY 1
+    ),
+    -- 3) 유니크 유저/유저 최대입찰 평균 (유저별 다중 → 날짜로 재집계)
+    users AS (
+      SELECT
+        DATE(ar.created_at) AS date,
+        COUNT(DISTINCT abu.user_address)       AS unique_users,
+        AVG(CAST(abu.user_max_bid AS NUMERIC)) AS avg_user_max_bid
+      FROM auction_bid_user abu
+      JOIN auction_register ar ON ar.id = abu.auction_id
+      GROUP BY 1
+    )
+    SELECT
+      d.date,
+      COALESCE(regs.registrations, 0)      AS registrations,
+      COALESCE(state.total_bids, 0)        AS total_bids,
+      COALESCE(state.total_bid_count, 0)   AS total_bid_count,
+      COALESCE(state.highest_bid, 0)       AS highest_bid,
+      COALESCE(users.unique_users, 0)      AS unique_users,
+      COALESCE(users.avg_user_max_bid, 0)  AS avg_user_max_bid
+    FROM dates d
+    LEFT JOIN regs  ON regs.date  = d.date
+    LEFT JOIN state ON state.date = d.date
+    LEFT JOIN users ON users.date = d.date
+    ORDER BY d.date ASC
+  `);
+
+        // 오늘자 최고 입찰(하이라이트 카드용)
+        const todayTopAuction = await this.dataSource.query(`
+    SELECT
+      ar.id AS auction_id,
+      ar.nft_name,
+      ar.nft_image,
+      CAST(abs.current_bid AS NUMERIC) AS highest_bid
+    FROM auction_bid_state abs
+    JOIN auction_register ar ON ar.id = abs.auction_id
+    WHERE abs.end_at::date = current_date
+    ORDER BY highest_bid DESC
+    LIMIT 1
+  `);
 
         const todayHighestBid = todayTopAuction?.[0]?.highest_bid ?? 0;
 
@@ -304,7 +337,7 @@ export class AuctionService {
 
         return {
             dailyStats: dailyStats.map((row: any) => ({
-                date: row.date,
+                date: row.date, // 프론트에서 formattedDate로 바꿔 쓰는 훅 유지
                 registrations: Number(row.registrations),
                 totalBids: Number(row.total_bids),
                 totalBidCount: Number(row.total_bid_count),
