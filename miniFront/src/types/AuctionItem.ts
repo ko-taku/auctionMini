@@ -14,4 +14,6 @@ export type AuctionItem = {
     contractAddress: string;
     tokenId: string;
     active: boolean;
+    finalPrice: number;              // 낙찰가
+    bettingWinnerAmount: number;     // 당첨된 베팅 예상가
 };

@@ -5,6 +5,7 @@ import {
     Clock,
     DollarSign,
     Flame,
+    Hourglass,
     Square,
 } from "lucide-react";
 
@@ -14,6 +15,7 @@ interface SortToolbarProps {
 }
 
 const iconMap: Record<SortType, React.ElementType> = {
+    time: Hourglass,
     latest: Clock,
     price: DollarSign,
     active: Flame,
@@ -21,14 +23,15 @@ const iconMap: Record<SortType, React.ElementType> = {
 };
 
 const labelMap: Record<SortType, string> = {
-    latest: "최신순",
+    time: "마감임박순",
+    latest: "등록순",
     price: "가격순",
     active: "경매중",
     ended: "종료",
 };
 
 export function SortToolbar({ selected, onChange }: SortToolbarProps) {
-    const options: SortType[] = ["latest", "price", "active", "ended"];
+    const options: SortType[] = ["time", "latest", "price", "active", "ended"];
 
     return (
         <div className="flex gap-2 translate-y-[5px] mb-2">
@@ -39,7 +42,7 @@ export function SortToolbar({ selected, onChange }: SortToolbarProps) {
                     <button
                         key={key}
                         title={label}
-                        onClick={() => onChange(selected === key ? "latest" : key)}
+                        onClick={() => onChange(selected === key ? "time" : key)}
                         className={`p-1 rounded transition-colors ${selected === key
                             ? "bg-white/10 text-white"
                             : "text-gray-400 hover:text-white hover:bg-white/5"
